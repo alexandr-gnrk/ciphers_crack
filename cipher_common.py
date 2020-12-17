@@ -13,7 +13,7 @@ LETTER_FREQ = {
 }
 
 
-def __read_quadgrams(filename):
+def __read_ngrams(filename):
     quadgrams = dict()
     for line in open(filename):
         quadgram, number = line.split()
@@ -28,7 +28,11 @@ def __read_quadgrams(filename):
     return quadgrams
 
 
-QUADGRAMS = None
+NGRAMS_LIST = (
+    __read_ngrams('./data/english_monograms.txt'),
+    __read_ngrams('./data/english_bigrams.txt'),
+    __read_ngrams('./data/english_trigrams.txt'),
+    __read_ngrams('./data/english_quadgrams.txt'))
 
 
 def chi_squared(obs_freq, letters, exp_freq):
@@ -80,17 +84,27 @@ def coincidence_index(text):
     return ci
 
 
-def quadgram_index(text):
-    global QUADGRAMS
-    if QUADGRAMS is None:
-        QUADGRAMS = __read_quadgrams('./data/english_quadgrams.txt')
-
+def ngram_index(text, group_size):
+    ngrams = NGRAMS_LIST[group_size - 1] 
     text = text.lower()
     index = 0
     for i in range(len(text) - 3):
-        quadgram = text[i:i + 4]
-        if quadgram in QUADGRAMS:
-            index += QUADGRAMS[quadgram]
+        ngram = text[i:i + 4]
+        if ngram in ngrams:
+            index += ngrams[ngram]
         else:
-            index += QUADGRAMS['floor']
+            index += ngrams['floor']
     return index / (len(text) - 3)
+
+
+def monogram_index(text):
+    return ngram_index(text, 1)
+
+def bigram_index(text):
+    return ngram_index(text, 2)
+
+def trigram_index(text):
+    return ngram_index(text, 3)
+
+def quadgram_index(text):
+    return ngram_index(text, 4)
