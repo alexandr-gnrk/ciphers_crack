@@ -28,8 +28,7 @@ def __read_quadgrams(filename):
     return quadgrams
 
 
-QUADGRAMS = __read_quadgrams('english_quadgrams.txt')
-
+QUADGRAMS = None
 
 
 def chi_squared(obs_freq, letters, exp_freq):
@@ -82,6 +81,10 @@ def coincidence_index(text):
 
 
 def quadgram_index(text):
+    global QUADGRAMS
+    if QUADGRAMS is None:
+        QUADGRAMS = __read_quadgrams('./data/english_quadgrams.txt')
+
     text = text.lower()
     index = 0
     for i in range(len(text) - 3):
