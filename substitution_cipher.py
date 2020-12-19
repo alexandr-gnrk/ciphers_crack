@@ -87,7 +87,7 @@ class NaturalSelection():
         return fitness
 
 
-    def __update_fitness_list(self):
+    def _update_fitness_list(self):
         self.fitness_list = list()
 
         # create a list of fitness values for population
@@ -96,13 +96,13 @@ class NaturalSelection():
             self.fitness_list.append(fitness)
 
 
-    def __choose_parents(self):
+    def _choose_parents(self):
         # select two random and uniq parents from population
         parent1, parent2 = random.sample(self.popul, 2)
         return parent1, parent2
 
 
-    def __make_selection(self):
+    def _make_selection(self):
         # sort fitness list and corresponding individuals
         self.fitness_list, self.popul = zip(
             *sorted(
@@ -114,17 +114,17 @@ class NaturalSelection():
         self.popul = self.popul[:self.saved_lives_num]
 
 
-    def __crossover_populaton(self):
+    def _crossover_populaton(self):
         new_popul = list(self.popul)
         # crossover population until max number of individuals reached
         while len(new_popul) < self.popul_num:
-            parent1, parent2 = self.__choose_parents()
+            parent1, parent2 = self._choose_parents()
             new_popul.append(parent1.crossover(parent2))
 
         self.popul = new_popul
 
 
-    def __mutate_popul(self):
+    def _mutate_popul(self):
         for indiv in self.popul:
             if random.choices(
                     [True, False], 
@@ -140,12 +140,12 @@ class NaturalSelection():
     def solve(self, eps=0.05):
         start = time.time()
 
-        self.__update_fitness_list()
+        self._update_fitness_list()
         while self.fitness_list[0] >= eps: 
-            self.__update_fitness_list()
-            self.__make_selection()
-            self.__crossover_populaton()
-            self.__mutate_popul()
+            self._update_fitness_list()
+            self._make_selection()
+            self._crossover_populaton()
+            self._mutate_popul()
             self.generation += 1
             self.print_stats()
 
