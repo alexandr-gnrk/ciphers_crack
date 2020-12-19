@@ -5,8 +5,7 @@ import time
 import cipher_common as cc
 
 
-UPPERCASE_LETTERS = bytes(string.ascii_uppercase, encoding='ascii')
-
+UPPERCASE_LETTERS = string.ascii_uppercase
 
 class Genotype():
     def __init__(self, genes=None):
@@ -14,12 +13,11 @@ class Genotype():
         if genes is None:
             possible_genes = UPPERCASE_LETTERS
             # shuffle possible genes
-            self.genes = bytes(random.sample(
+            self.genes = ''.join(random.sample(
                 possible_genes, 
                 len(possible_genes)))
         else:
             self.genes = genes
-
 
     def __crossover_gens(self, gen1, gen2, letters):
         if gen1 not in letters and \
@@ -32,27 +30,24 @@ class Genotype():
         else:
             return random.choice((gen1,gen2))
 
-
     def crossover(self, indiv):
-        result_genes = bytes()
+        result_genes = ''
         letters = set(UPPERCASE_LETTERS)
 
         for i in range(len(self.genes)):
             new_gen = self.__crossover_gens(
                 indiv.genes[i], self.genes[i], letters.copy())
             letters.remove(new_gen)
-            result_genes += bytes([new_gen])
+            result_genes += new_gen
 
         return Genotype(result_genes)
-
 
     def mutate(self):
         i, j = random.sample(range(len(self.genes)), 2)
         x, y = self.genes[i], self.genes[j]
-        self.genes = self.genes[:j] + bytes([x]) + self.genes[j + 1:]
-        self.genes = self.genes[:i] + bytes([y]) + self.genes[i + 1:]
+        self.genes = self.genes[:j] + x + self.genes[j + 1:]
+        self.genes = self.genes[:i] + y + self.genes[i + 1:]
         return self.genes
-
 
     def __repr__(self):
         return str(self.genes)
@@ -80,15 +75,14 @@ class NaturalSelection():
 
 
     def translate_cipher(self, key):
-        bts = bytes(self.ciphertext, encoding='ascii')
         # translate our cipher text by genes of individual
-        key_map = bytes.maketrans(UPPERCASE_LETTERS, key)
-        return bts.translate(key_map)
+        key_map = str.maketrans(UPPERCASE_LETTERS, key)
+        return self.ciphertext.translate(key_map)
 
 
     def fitness(self, indiv):
         decoded = self.translate_cipher(indiv.genes)
-        index = cc.quadgram_index(decoded.decode())
+        index = cc.quadgram_index(decoded)
         fitness = abs(index - self.exp_index)
         return fitness
 
