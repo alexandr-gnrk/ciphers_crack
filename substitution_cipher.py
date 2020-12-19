@@ -68,7 +68,7 @@ class NaturalSelection():
         self.popul = [Genotype() for _ in range(self.popul_num)]
         # create fitness list for population and init it
         self.fitness_list = list()
-        self.__update_fitness_list()
+
         # counter of generations
         self.generation = 0
         self.enable_logging = enable_logging
@@ -140,6 +140,7 @@ class NaturalSelection():
     def solve(self, eps=0.05):
         start = time.time()
 
+        self.__update_fitness_list()
         while self.fitness_list[0] >= eps: 
             self.__update_fitness_list()
             self.__make_selection()
