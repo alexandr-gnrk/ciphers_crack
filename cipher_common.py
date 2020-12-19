@@ -88,13 +88,13 @@ def ngram_index(text, group_size):
     ngrams = NGRAMS_LIST[group_size - 1] 
     text = text.lower()
     index = 0
-    for i in range(len(text) - 3):
-        ngram = text[i:i + 4]
+    for i in range(len(text) - group_size + 1):
+        ngram = text[i:i + group_size]
         if ngram in ngrams:
             index += ngrams[ngram]
         else:
             index += ngrams['floor']
-    return index / (len(text) - 3)
+    return index / (len(text) - group_size + 1)
 
 
 def monogram_index(text):
