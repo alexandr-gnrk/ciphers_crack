@@ -90,10 +90,7 @@ def ngram_index(text, group_size):
     index = 0
     for i in range(len(text) - group_size + 1):
         ngram = text[i:i + group_size]
-        if ngram in ngrams:
-            index += ngrams[ngram]
-        else:
-            index += ngrams['floor']
+        index += ngrams.get(ngram, ngrams['floor'])
     return index / (len(text) - group_size + 1)
 
 

@@ -31,16 +31,15 @@ class Genotype():
             return random.choice((gen1,gen2))
 
     def crossover(self, indiv):
-        result_genes = ''
         letters = set(UPPERCASE_LETTERS)
-
+        genes = list()
         for i in range(len(self.genes)):
             new_gen = self.__crossover_gens(
                 indiv.genes[i], self.genes[i], letters.copy())
             letters.remove(new_gen)
-            result_genes += new_gen
+            genes.append(new_gen)
 
-        return Genotype(result_genes)
+        return Genotype(''.join(genes))
 
     def mutate(self):
         i, j = random.sample(range(len(self.genes)), 2)
@@ -88,12 +87,8 @@ class NaturalSelection():
 
 
     def _update_fitness_list(self):
-        self.fitness_list = list()
-
         # create a list of fitness values for population
-        for indiv in self.popul:
-            fitness = self.fitness(indiv)
-            self.fitness_list.append(fitness)
+        self.fitness_list = list(map(self.fitness, self.popul))
 
 
     def _choose_parents(self):
@@ -147,7 +142,8 @@ class NaturalSelection():
             self._crossover_populaton()
             self._mutate_popul()
             self.generation += 1
-            self.print_stats()
+            if self.generation % 10 == 0:
+                self.print_stats()
 
         key = self.popul[0].genes
         text = self.translate_cipher(key)
